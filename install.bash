@@ -4,7 +4,7 @@
 cwd=$(pwd)
 external_port=8000
 internal_port=8001
-
+app_name=app
 echo 'Update packages'
 echo '============================='
 sudo apt update && sudo apt upgrade
@@ -39,7 +39,7 @@ service supervisor status
 
 echo 'Create a supervisor configuration file'
 cat > foo.conf << EOF
-[program:rest_todo_app]
+[program:$app_name]
 directory=$cwd/backend/
 command=$cwd/backend/env/bin/gunicorn mybackend.wsgi -w 3  -b 0.0.0.0:$internal_port
 user=mad
@@ -47,15 +47,15 @@ autostart=true
 autorestart=true
 stopasgroup=true
 killasgroup=true
-stderr_logfile=/var/log/todo_app/todo_app.err.log
-stdout_logfile=/var/log/todo_app/todo_app.out.log
+stderr_logfile=/var/log/$app_name/$app_name.err.log
+stdout_logfile=/var/log/$app_name/$app_name.out.log
 EOF
-mkdir -p /var/log/todo_app/
-touch /var/log/todo_app/todo_app.err.log
-touch /var/log/todo_app/todo_app.out.log
+mkdir -p /var/log/$app_name/
+touch /var/log/$app_name/$app_name.err.log
+touch /var/log/$app_name/$app_name.out.log
 
 echo 'Restarting the supervisor'
-mv foo.conf /etc/supervisor/conf.d/todo_app.conf
+mv foo.conf /etc/supervisor/conf.d/$app_name.conf
 supervisorctl reread
 supervisorctl reload
 
@@ -79,11 +79,11 @@ server {
 }
 EOF
 
-mv foot /etc/nginx/sites-available/todo_app.conf
+mv foot /etc/nginx/sites-available/$app_name.conf
 
 rm /etc/nginx/sites-enabled/default
 
-(cd /etc/nginx/sites-enabled && ln -s ../sites-available/todo_app.conf)
+(cd /etc/nginx/sites-enabled && ln -s ../sites-available/$app_name.conf)
 
 service nginx restart
 

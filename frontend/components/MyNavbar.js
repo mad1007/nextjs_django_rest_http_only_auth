@@ -9,7 +9,7 @@ function MyNavbar() {
   return (
     <Navbar>
       <Container>
-        <Navbar.Brand href="#home">TODO APP</Navbar.Brand>
+        <Navbar.Brand href="#home">APP</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           {user ? (

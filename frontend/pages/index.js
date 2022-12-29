@@ -2,9 +2,7 @@ import { useEffect } from 'react'
 import { useUser } from '../contexts/UserContext'
 import styles from '../styles/Home.module.css'
 import {useRouter} from 'next/router'
-import { useMessages } from '../contexts/MessageContext'
 import Spinner from 'react-bootstrap/Spinner';
-import Todos from '../components/Todo/Todos'
 
 export default function Home() {
   const {checkAuth, user, loading, logout} = useUser()
@@ -33,7 +31,7 @@ export default function Home() {
 
   return (
     <div className="container mt-5">
-      <Todos />
+      <h1>Hello {user?.username}</h1>
     </div>
   )
 }
