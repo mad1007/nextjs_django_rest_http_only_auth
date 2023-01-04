@@ -13,31 +13,27 @@ const UserProvider = ({children})=>{
     const checkAuth = async (showMsgError=true)=>{
         setLoading(true)
         const response = await fetchWithCreds(`/api/auth/check/`)
-        if(!response || response.status == 404){
-            setLoading(false)
-            return addMessage({type:"warning", msg:"Couldnt authenticate"})
-        }
 
-        if(response.status != 200){
-            const errMessage = await response.json()
-            console.log('errMessage', errMessage)
+        if(!response.success){
+            console.log('errMessage', response.error)
             if(showMsgError){
-                addMessage({type:"warning", msg:errMessage.detail})
+                addMessage({type:"warning", msg:response.error})
             }
             setLoading(false)
             return false
         }
-        const data = await response.json()
+        const data = response.data
         setUser(data)
         setLoading(false)
         return true
     }
     const logout = async ()=>{
         const response = await fetchWithCreds(`/api/logout/`)
-        if(!response || response.status != 200){
+        if(!response.success){
             return false
         }
         setUser(undefined)
+        addMessage({type:"info", msg:"Successfuly logged out"})
         router.push('/login')
 
     }

@@ -41,17 +41,13 @@ const Login = () => {
         setauthLoading(true)
         const body = {username, password}
         const response = await fetchWithCreds(`/api/login/`, 'POST', body)
-        if(!response || response.status == 404){
+        if(!response.success){
           setauthLoading(false)
-          return addMessage({type:"warning", msg:"Couldnt authenticate"})
+          return addMessage({type:"error", msg:response.error})
         }
-        if(response.status != 200){
-            const error = await response.json()
-            addMessage({'type':'warning', msg:JSON.stringify(error)})
+        else{
             setauthLoading(false)
-        }else{
             addMessage({type:'success', msg:'Successfully logged In'})
-            setauthLoading(false)
             router.push('/')
         }
     }

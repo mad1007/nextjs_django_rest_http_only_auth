@@ -20,11 +20,24 @@ export const fetchWithCreds = async (url, method="GET", body)=>{
         const response = await fetch(
             targetUrl, fetchParams
         )        
-        return response
+        if(response.status == 404){
+            return {success:false, error:"url not found"}
+        }
+        if(response.status >= 400){
+            try {
+                const error = await response.json()
+                return {success:false, error:error, status:response.status}
+            } catch (error) {
+                return {success:false, error:"faild to get json response "+error, status: response.status}
+            }
+        }else{
+            const data = await response.json()
+            return {success:true, data}
+        }
 
     } catch (error) {
         console.error(error)
-        return
+        return {success: false, error, status:0}
     }
 
 }
